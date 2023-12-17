@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hava_durumu/search_page.dart';
 import 'package:http/http.dart' as http;
+
+import 'loading_simge.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,19 +14,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String sehirAdi = 'Ankara';
-  double sicaklik = 43.0;
-  String key = "b341c37285f7a448e34f199b78d963bc";
+  String location = 'Ankara';
+  double? temperature;
+  final String key = 'b341c37285f7a448e34f199b78d963bc';
+  var locationData;
+  Future<void> getSehir() async {
+    locationData = await http.get(Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?q=$location&appid=$key&units=metric'));
+    var ayrismis = jsonDecode(locationData.body);
 
-  void getSehir() {
-    Future<http.Response> fetchAlbum() {
-      return http.get(Uri.parse(
-          'https://api.openweathermap.org/data/2.5/weather?q=$sehirAdi&appid=$sicaklik'));
-    }
+    setState(() {
+      temperature = ayrismis['main']['temp'];
+      location = ayrismis['name'];
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    initState();
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -30,40 +39,42 @@ class _HomePageState extends State<HomePage> {
           fit: BoxFit.cover,
         ),
       ),
-      child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("$sicaklik°C",
-                    style:
-                        TextStyle(fontSize: 70, fontWeight: FontWeight.bold)),
-                Row(
+      child: (temperature == null)
+          ? Center(child: loader)
+          : Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Center(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      sehirAdi,
-                      style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    Text("$temperature°C",
+                        style: TextStyle(
+                            fontSize: 70, fontWeight: FontWeight.bold)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          location,
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SearchPage()));
+                            },
+                            icon: Icon(
+                              size: 45,
+                              Icons.search,
+                              color: Colors.white70,
+                            ))
+                      ],
                     ),
-                    IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SearchPage()));
-                        },
-                        icon: Icon(
-                          size: 45,
-                          Icons.search,
-                          color: Colors.white70,
-                        ))
                   ],
                 ),
-              ],
-            ),
-          )),
+              )),
     );
   }
 }

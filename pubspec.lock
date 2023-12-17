@@ -62,6 +62,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_animated_loadingkit:
+    dependency: "direct main"
+    description:
+      name: flutter_animated_loadingkit
+      sha256: f0cd7157928c23433ec785b42cbbfef40c31ac57f484b121805e0a6b5da716e7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.7"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -234,3 +242,4 @@ packages:
     version: "0.4.0"
 sdks:
   dart: ">=3.3.0-174.2.beta <4.0.0"
+  flutter: ">=1.17.0"

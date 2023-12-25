@@ -8,7 +8,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  @override
+  String secilenSehir = '';
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -27,13 +27,22 @@ class _SearchPageState extends State<SearchPage> {
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: TextField(
+                      onChanged: (value) {
+                        secilenSehir = value;
+                      },
                       decoration: InputDecoration(
-                          hintText: 'ŞEHİR SEÇİNİZ',
-                          prefixIcon: Icon(Icons.location_city),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          )),
-                    ))
+                        hintText: 'ŞEHİR SEÇİNİZ',
+                        prefixIcon: Icon(Icons.location_city),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                    )),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context, secilenSehir);
+                    },
+                    child: Text("Seçilen Şehir"))
               ],
             ),
           )),

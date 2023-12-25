@@ -14,19 +14,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String location = 'Ankara';
+  String location = 'Canakkale';
   double? temperature;
   final String key = 'b341c37285f7a448e34f199b78d963bc';
   var locationData;
+
   Future<void> getSehir() async {
     locationData = await http.get(Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?q=$location&appid=$key&units=metric'));
+    print(locationData.body);
     var ayrismis = jsonDecode(locationData.body);
 
     setState(() {
       temperature = ayrismis['main']['temp'];
       location = ayrismis['name'];
     });
+  }
+
+  @override
+  void initState() {
+    getSehir();
+    super.initState();
   }
 
   @override
@@ -58,11 +66,12 @@ class _HomePageState extends State<HomePage> {
                               fontSize: 30, fontWeight: FontWeight.bold),
                         ),
                         IconButton(
-                            onPressed: () {
-                              Navigator.push(
+                            onPressed: () async {
+                              location = locationData = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => SearchPage()));
+                              getSehir();
                             },
                             icon: Icon(
                               size: 45,

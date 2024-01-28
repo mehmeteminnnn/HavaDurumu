@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -39,13 +40,42 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     )),
                 ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context, secilenSehir);
+                    onPressed: () async {
+                      //bu sehir için API yanıt veriyor mu
+                      var response = await http.get(Uri.parse(
+                          "https://api.openweathermap.org/data/2.5/weather?q=$secilenSehir&appid=b341c37285f7a448e34f199b78d963bc&units=metric"));
+                      if (response.statusCode == 200) {
+                        Navigator.pop(context, secilenSehir);
+                      } else {
+                        showMyAlertDialog(context);
+                      }
                     },
                     child: Text("Seçilen Şehir"))
               ],
             ),
           )),
+    );
+  }
+
+  void showMyAlertDialog(BuildContext context) {
+    // Ayrı bir fonksiyon olarak AlertDialog'u göster
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Lokasyon Bulunamadı', style: TextStyle(fontSize: 20)),
+          content: Text('Lütfen geçerli bir şehir seçiniz.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                // AlertDialog'u kapat
+                Navigator.of(context).pop();
+              },
+              child: Text('Tamam'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

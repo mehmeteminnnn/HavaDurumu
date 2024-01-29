@@ -18,6 +18,7 @@ class _HomePageState extends State<HomePage> {
   double? temperature;
   final String key = 'b341c37285f7a448e34f199b78d963bc';
   var locationData;
+  String kod = "home";
 
   Future<void> getSehir() async {
     locationData = await http.get(Uri.parse(
@@ -28,6 +29,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       temperature = ayrismis['main']['temp'];
       location = ayrismis['name'];
+      kod = ayrismis["weather"][0]["main"];
     });
   }
 
@@ -40,9 +42,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/home.jpeg'),
+          image: AssetImage('assets/$kod.jpeg'),
           fit: BoxFit.cover,
         ),
       ),

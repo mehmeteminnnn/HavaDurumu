@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:hava_durumu/lokasyon_alma.dart';
 import 'package:hava_durumu/search_page.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,11 +16,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String location = 'Canakkale';
+  String? location;
   double? temperature;
   final String key = 'b341c37285f7a448e34f199b78d963bc';
   var locationData;
   String kod = "home";
+  Position? position;
+  LokasyonAlma lokasyonAlma = LokasyonAlma();
+  void initState() {
+    initializeWeather();
+    super.initState();
+  }
 
   Future<void> getSehir() async {
     locationData = await http.get(Uri.parse(
@@ -33,10 +41,22 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  @override
-  void initState() {
-    getSehir();
-    super.initState();
+  Future<void> initializeWeather() async {
+    position = await lokasyonAlma.determinePosition();
+    await getSehirlonvelat(position!.latitude, position!.longitude);
+  }
+
+  Future<void> getSehirlonvelat(double latitude, double longitude) async {
+    locationData = await http.get(Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$key&units=metric'));
+    print(locationData.body);
+    var ayrismis = jsonDecode(locationData.body);
+
+    setState(() {
+      temperature = ayrismis['main']['temp'];
+      location = ayrismis['name'];
+      kod = ayrismis["weather"][0]["main"];
+    });
   }
 
   @override
@@ -48,7 +68,7 @@ class _HomePageState extends State<HomePage> {
           fit: BoxFit.cover,
         ),
       ),
-      child: (temperature == null)
+      child: (temperature == null || position == null)
           ? Center(child: loader)
           : Scaffold(
               backgroundColor: Colors.transparent,
@@ -63,23 +83,24 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          location,
+                          location!,
                           style: TextStyle(
                               fontSize: 30, fontWeight: FontWeight.bold),
                         ),
                         IconButton(
-                            onPressed: () async {
-                              location = locationData = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SearchPage()));
-                              getSehir();
-                            },
-                            icon: Icon(
-                              size: 45,
-                              Icons.search,
-                              color: Colors.white70,
-                            ))
+                          onPressed: () async {
+                            location = locationData = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SearchPage()));
+                            getSehir();
+                          },
+                          icon: Icon(
+                            size: 45,
+                            Icons.search,
+                            color: Colors.white70,
+                          ),
+                        )
                       ],
                     ),
                   ],

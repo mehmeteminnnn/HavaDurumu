@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+
+import 'lokasyon_alma.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -10,6 +13,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   String secilenSehir = '';
+  LokasyonAlma lokasyonAlma = LokasyonAlma();
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -19,41 +23,43 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
       child: Scaffold(
-          appBar: AppBar(backgroundColor: Colors.transparent),
-          backgroundColor: Colors.transparent,
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: TextField(
-                      onChanged: (value) {
-                        secilenSehir = value;
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'ŞEHİR SEÇİNİZ',
-                        prefixIcon: Icon(Icons.location_city),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                      ),
-                    )),
-                ElevatedButton(
-                    onPressed: () async {
-                      //bu sehir için API yanıt veriyor mu
-                      var response = await http.get(Uri.parse(
-                          "https://api.openweathermap.org/data/2.5/weather?q=$secilenSehir&appid=b341c37285f7a448e34f199b78d963bc&units=metric"));
-                      if (response.statusCode == 200) {
-                        Navigator.pop(context, secilenSehir);
-                      } else {
-                        showMyAlertDialog(context);
-                      }
+        appBar: AppBar(backgroundColor: Colors.transparent),
+        backgroundColor: Colors.transparent,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: TextField(
+                    onChanged: (value) {
+                      secilenSehir = value;
                     },
-                    child: Text("Seçilen Şehir"))
-              ],
-            ),
-          )),
+                    decoration: InputDecoration(
+                      hintText: 'ŞEHİR SEÇİNİZ',
+                      prefixIcon: Icon(Icons.location_city),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                    ),
+                  )),
+              ElevatedButton(
+                  onPressed: () async {
+                    //bu sehir için API yanıt veriyor mu
+                    Position position = await lokasyonAlma.determinePosition();
+                    var response = await http.get(Uri.parse(
+                        "https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=b341c37285f7a448e34f199b78d963bc&units=metric"));
+                    if (response.statusCode == 200) {
+                      Navigator.pop(context, secilenSehir);
+                    } else {
+                      showMyAlertDialog(context);
+                    }
+                  },
+                  child: Text("Seçilen Şehir"))
+            ],
+          ),
+        ),
+      ),
     );
   }
 

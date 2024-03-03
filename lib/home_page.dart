@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hava_durumu/lokasyon_alma.dart';
 import 'package:hava_durumu/search_page.dart';
+import 'package:hava_durumu/widgets/gunluk_hava_durumu.dart';
 import 'package:http/http.dart' as http;
 
 import 'loading_simge.dart';
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   var locationData;
   String kod = "home";
   Position? position;
+  String? icon;
   LokasyonAlma lokasyonAlma = LokasyonAlma();
   void initState() {
     initializeWeather();
@@ -38,6 +40,7 @@ class _HomePageState extends State<HomePage> {
       temperature = ayrismis['main']['temp'];
       location = ayrismis['name'];
       kod = ayrismis["weather"][0]["main"];
+      icon = ayrismis["weather"][0]["icon"];
     });
   }
 
@@ -56,6 +59,7 @@ class _HomePageState extends State<HomePage> {
       temperature = ayrismis['main']['temp'];
       location = ayrismis['name'];
       kod = ayrismis["weather"][0]["main"];
+      icon = ayrismis["weather"][0]["icon"];
     });
   }
 
@@ -76,6 +80,10 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Container(
+                        width: 130,
+                        child: Image.network(
+                            "https://openweathermap.org/img/wn/$icon@4x.png")),
                     Text("$temperature°C",
                         style: TextStyle(
                             fontSize: 70, fontWeight: FontWeight.bold)),
@@ -100,9 +108,23 @@ class _HomePageState extends State<HomePage> {
                             Icons.search,
                             color: Colors.white70,
                           ),
-                        )
+                        ),
                       ],
                     ),
+                    SizedBox(
+                      height: 110,
+                      width: MediaQuery.of(context).size.width * 0.93,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          DailyWeatherCard(),
+                          DailyWeatherCard(),
+                          DailyWeatherCard(),
+                          DailyWeatherCard(),
+                          DailyWeatherCard(),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               )),

@@ -25,8 +25,29 @@ class _HomePageState extends State<HomePage> {
   Position? position;
   String? icon;
   LokasyonAlma lokasyonAlma = LokasyonAlma();
+  List<String> icons = [
+    "01d",
+    "02d",
+    "03d",
+    "04d",
+    "09d",
+    "10d",
+    "11d",
+    "13d",
+    "50d"
+  ];
+  List<double> dereceler = [20, 20, 20, 20, 20, 20, 20];
+  List<String> gunler = [
+    "Pazartesi",
+    "Salı",
+    "Çarşamba",
+    "Perşembe",
+    "Cuma",
+  ];
+
   void initState() {
     initializeWeather();
+
     super.initState();
   }
 
@@ -36,17 +57,32 @@ class _HomePageState extends State<HomePage> {
     print(locationData.body);
     var ayrismis = jsonDecode(locationData.body);
 
-    setState(() {
-      temperature = ayrismis['main']['temp'];
-      location = ayrismis['name'];
-      kod = ayrismis["weather"][0]["main"];
-      icon = ayrismis["weather"][0]["icon"];
-    });
-  }
-
-  Future<void> initializeWeather() async {
-    position = await lokasyonAlma.determinePosition();
-    await getSehirlonvelat(position!.latitude, position!.longitude);
+    if (ayrismis['cod'] == 200) {
+      setState(() {
+        temperature = ayrismis['main']['temp'];
+        location = ayrismis['name'];
+        kod = ayrismis["weather"][0]["main"];
+        icon = ayrismis["weather"][0]["icon"];
+      });
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Hata'),
+            content: Text('Hava durumu bilgileri alınamadı.'),
+            actions: [
+              TextButton(
+                child: Text('Tamam'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Future<void> getSehirlonvelat(double latitude, double longitude) async {
@@ -61,6 +97,45 @@ class _HomePageState extends State<HomePage> {
       kod = ayrismis["weather"][0]["main"];
       icon = ayrismis["weather"][0]["icon"];
     });
+  }
+
+  Future<void> getDailyForecastByLatlon(
+      double latitude, double longitude) async {
+    var forecastData = await http.get(Uri.parse(
+        'https://api.openweathermap.org/data/2.5/forecast?lat=$latitude&lon=$longitude&appid=$key&units=metric'));
+    var ayrilmisForecast = jsonDecode(forecastData.body);
+    dereceler.clear();
+    gunler.clear();
+    icons.clear();
+    setState(() {
+      for (int i = 7; i <= 39; i += 8) {
+        dereceler.add(ayrilmisForecast["list"][i]["main"]["temp"]);
+        icons.add(ayrilmisForecast["list"][i]["weather"][0]["icon"]);
+        gunler.add(ayrilmisForecast["list"][i]["dt_txt"]);
+      }
+    });
+  }
+
+  Future<void> getDailyForecastByCity(double latitude, double longitude) async {
+    var forecastData = await http.get(Uri.parse(
+        'https://api.openweathermap.org/data/2.5/forecast?q=$location&appid=$key&units=metric'));
+    var ayrilmisForecast = jsonDecode(forecastData.body);
+    dereceler.clear();
+    gunler.clear();
+    icons.clear();
+    setState(() {
+      for (int i = 7; i <= 39; i += 8) {
+        dereceler.add(ayrilmisForecast["list"][i]["main"]["temp"]);
+        icons.add(ayrilmisForecast["list"][i]["weather"][0]["icon"]);
+        gunler.add(ayrilmisForecast["list"][i]["dt_txt"]);
+      }
+    });
+  }
+
+  Future<void> initializeWeather() async {
+    position = await lokasyonAlma.determinePosition();
+    await getSehirlonvelat(position!.latitude, position!.longitude);
+    await getDailyForecastByLatlon(position!.latitude, position!.longitude);
   }
 
   @override
@@ -102,6 +177,8 @@ class _HomePageState extends State<HomePage> {
                                 MaterialPageRoute(
                                     builder: (context) => SearchPage()));
                             getSehir();
+                            getDailyForecastByCity(
+                                position!.latitude, position!.longitude);
                           },
                           icon: Icon(
                             size: 45,
@@ -112,16 +189,31 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     SizedBox(
-                      height: 110,
+                      height: MediaQuery.of(context).size.height * 0.25,
                       width: MediaQuery.of(context).size.width * 0.93,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          DailyWeatherCard(),
-                          DailyWeatherCard(),
-                          DailyWeatherCard(),
-                          DailyWeatherCard(),
-                          DailyWeatherCard(),
+                          DailyWeatherCard(
+                              icon: icons[0],
+                              day: gunler[0],
+                              temperature: dereceler[0]),
+                          DailyWeatherCard(
+                              icon: icons[1],
+                              day: gunler[1],
+                              temperature: dereceler[1]),
+                          DailyWeatherCard(
+                              icon: icons[2],
+                              day: gunler[2],
+                              temperature: dereceler[2]),
+                          DailyWeatherCard(
+                              icon: icons[3],
+                              day: gunler[3],
+                              temperature: dereceler[3]),
+                          DailyWeatherCard(
+                              icon: icons[4],
+                              day: gunler[4],
+                              temperature: dereceler[4]),
                         ],
                       ),
                     )

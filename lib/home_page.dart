@@ -25,6 +25,26 @@ class _HomePageState extends State<HomePage> {
   Position? position;
   String? icon;
   LokasyonAlma lokasyonAlma = LokasyonAlma();
+  List<String> icons = [
+    "01d",
+    "02d",
+    "03d",
+    "04d",
+    "09d",
+    "10d",
+    "11d",
+    "13d",
+    "50d"
+  ];
+  List<double> dereceler = [20, 20, 20, 20, 20, 20, 20];
+  List<String> gunler = [
+    "Pazartesi",
+    "Salı",
+    "Çarşamba",
+    "Perşembe",
+    "Cuma",
+  ];
+
   void initState() {
     initializeWeather();
     super.initState();
@@ -112,16 +132,31 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     SizedBox(
-                      height: 110,
+                      height: MediaQuery.of(context).size.height * 0.25,
                       width: MediaQuery.of(context).size.width * 0.93,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          DailyWeatherCard(),
-                          DailyWeatherCard(),
-                          DailyWeatherCard(),
-                          DailyWeatherCard(),
-                          DailyWeatherCard(),
+                          DailyWeatherCard(
+                              icon: icons[0],
+                              day: gunler[0],
+                              temperature: dereceler[0]),
+                          DailyWeatherCard(
+                              icon: icons[1],
+                              day: gunler[1],
+                              temperature: dereceler[1]),
+                          DailyWeatherCard(
+                              icon: icons[2],
+                              day: gunler[2],
+                              temperature: dereceler[2]),
+                          DailyWeatherCard(
+                              icon: icons[3],
+                              day: gunler[3],
+                              temperature: dereceler[3]),
+                          DailyWeatherCard(
+                              icon: icons[4],
+                              day: gunler[4],
+                              temperature: dereceler[4]),
                         ],
                       ),
                     )

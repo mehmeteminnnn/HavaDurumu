@@ -25,24 +25,17 @@ class _HomePageState extends State<HomePage> {
   Position? position;
   String? icon;
   LokasyonAlma lokasyonAlma = LokasyonAlma();
-  List<String> icons = [
-    "01d",
-    "02d",
-    "03d",
-    "04d",
-    "09d",
-    "10d",
-    "11d",
-    "13d",
-    "50d"
-  ];
-  List<double> dereceler = [20, 20, 20, 20, 20, 20, 20];
-  List<String> gunler = [
+  List<String> icons = ["01d", "01d", "01d", "01d", "01d"];
+  List<double> dereceler = [20, 20, 20, 20, 20];
+  List<String> gunler = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma"];
+  List<String> weekdays = [
     "Pazartesi",
     "Salı",
     "Çarşamba",
     "Perşembe",
     "Cuma",
+    "Cumartesi",
+    "Pazar"
   ];
 
   void initState() {

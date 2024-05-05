@@ -11,6 +11,17 @@ class DailyWeatherCard extends StatelessWidget {
   final String? day;
   @override
   Widget build(BuildContext context) {
+    List<String> weekdays = [
+      "Pazartesi",
+      "Salı",
+      "Çarşamba",
+      "Perşembe",
+      "Cuma",
+      "Cumartesi",
+      "Pazar"
+    ];
+    String weekday;
+    weekday = weekdays[DateTime.parse(day!).weekday - 1];
     return Card(
       color: Colors.transparent,
       child: SizedBox(
@@ -23,10 +34,17 @@ class DailyWeatherCard extends StatelessWidget {
           ),
           Text(
             "$temperature°C",
-            style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+            style:
+                TextStyle(fontSize: 19, fontWeight: FontWeight.bold, shadows: [
+              Shadow(
+                color: Colors.black,
+                offset: Offset(2, 2),
+                blurRadius: 3,
+              ),
+            ]),
           ),
           Text(
-            day!,
+            weekday,
             style: TextStyle(
                 fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
           ),

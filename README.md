@@ -26,6 +26,4 @@ Bu proje, Flutter kullanarak geliştirilmiş basit bir hava durumu uygulamasıd�
 
 - Bu projeye katkıda bulunmak isterseniz, lütfen fork edin ve kendi dalınızda değişikliklerinizi yapın. Sonra bir pull isteği gönderin.
 
-## Lisans
 
-Bu proje MIT Lisansı altında lisanslanmıştır. Daha fazla bilgi için [LİSANS](LICENSE) dosyasına bakın.

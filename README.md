@@ -1,6 +1,6 @@
-<img src="https://github.com/user-attachments/assets/3be55330-b634-4952-a62c-b48c1d5fa710" alt="Screenshot 1" width="300"/>
-<img src="https://github.com/user-attachments/assets/e8e6b54c-4d75-4565-a370-40df77b9a6e7" alt="Screenshot 2" width="300"/>
-<img src="https://github.com/user-attachments/assets/9e717da5-fa74-44ea-85c2-c5b50c8c19dc" alt="Screenshot 3" width="300"/>
+<img src="https://github.com/user-attachments/assets/3be55330-b634-4952-a62c-b48c1d5fa710" alt="Screenshot 1" width="250"/>
+<img src="https://github.com/user-attachments/assets/e8e6b54c-4d75-4565-a370-40df77b9a6e7" alt="Screenshot 2" width="250"/>
+<img src="https://github.com/user-attachments/assets/9e717da5-fa74-44ea-85c2-c5b50c8c19dc" alt="Screenshot 3" width="250"/>
 
 # Flutter Hava Durumu Uygulaması
 
